@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Raleway";
+  src: url(../public/fonts/Raleway-VariableFont_wght.ttf);
+}
+
+@theme {
+  --color-beige: #e0bea2;
+  --color-mainGray: #252525;
+}
+
+#app {
+  font-family: "Raleway";
+  font-size: 16px;
+  font-weight: 300;
+  color: #252525;
+}
+
+.container {
+  width: 82%;
+  margin-inline: auto;
+}
+
+textarea {
+  resize: none;
+}
+
+/* Стилизованные теги */
+
+.input {
+  border: solid 1px #252525b6;
+  padding-inline: 10px;
+  outline: none;
+}
+
+.input:focus {
+  border: solid 1px #e0bea2;
+}
+
+.button--beige {
+  background-color: #e0bea2;
+  cursor: pointer;
+  color: #fff;
+  letter-spacing: 1.5px;
+  transition: all 0.3s ease;
+}
+
+.button--beige:hover {
+  box-shadow: 0 5px 7px #25252515;
+}
+
+.button--beige:active {
+  box-shadow: inset 0 5px 7px #25252520;
+}
+
+.button--white {
+  border: solid 1px #e0bea2;
+  color: #e0bea2;
+  cursor: pointer;
+  letter-spacing: 1.5px;
+  transition: all 0.3s ease;
+}
+
+.button--white:hover {
+  box-shadow: 0 5px 7px #25252515;
+}
+
+.button--white:active {
+  box-shadow: inset 0 5px 7px #25252520;
+}
