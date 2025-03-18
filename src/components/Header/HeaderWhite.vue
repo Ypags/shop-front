@@ -1,4 +1,21 @@
-<script></script>
+<script setup>
+// import { jwtDecode } from "jwt-decode";
+// import { ref } from "vue";
+
+// const hasAdmin = ref(false);
+
+// console.log(localStorage.getItem("token"));
+
+// const userInfo = jwtDecode(localStorage.getItem("token"));
+// console.log(userInfo);
+
+// const userRole =
+//   userInfo["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+// console.log(userRole);
+// if (userRole == "Admin") {
+//   hasAdmin.value = true;
+// }
+</script>
 
 <template>
   <header class="header">
@@ -7,7 +24,7 @@
         <li class="nav-text">
           <RouterLink to="/catalog">КАТАЛОГ</RouterLink>
           <RouterLink to="">О НАС</RouterLink>
-          <RouterLink to="/crm">CRM</RouterLink>
+          <RouterLink to="/crm" v-if="hasAdmin">CRM</RouterLink>
         </li>
         <li>
           <a href=""

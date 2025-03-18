@@ -1,9 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
 import { useRouter } from "vue-router";
-// import jwt from "jsonwebtoken";
 
 const router = useRouter();
 
@@ -24,14 +22,6 @@ async function sendData() {
       if (response.status == 200) {
         console.log(response);
         token.value = response.data.token;
-        // ------------------------------
-        const userInfo = jwtDecode(token.value);
-        const role =
-          userInfo[
-            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-          ];
-        console.log(role);
-        // ------------------------------
         localStorage.setItem("token", response.data.token);
         if (localStorage.getItem("token")) {
           router.push("/");
@@ -48,6 +38,7 @@ async function sendData() {
 </script>
 
 <template>
+  <RouterLink to="/">Главная</RouterLink>
   <div class="my-auto flex h-screen w-screen items-center justify-center">
     <form @submit.prevent="sendData" class="flex w-2/7 flex-col gap-3">
       <h2 class="mb-5 text-center text-xl">Авторизация</h2>

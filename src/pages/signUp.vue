@@ -30,6 +30,7 @@ async function sendData() {
 </script>
 
 <template>
+  <RouterLink to="/">Главная</RouterLink>
   <div class="my-auto flex h-screen w-screen items-center justify-center">
     <form @submit.prevent="sendData" class="flex w-2/7 flex-col gap-3">
       <h2 class="mb-3 text-center text-xl">Регистрация</h2>

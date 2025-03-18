@@ -17,9 +17,9 @@ watch(async () => {
 </script>
 
 <template>
-  <div className="container">
+  <div class="container">
     <Header></Header>
-    <div className="history">
+    <div class="mt-2 mb-5 flex items-center gap-1.5">
       <RouterLink to="/">Главная</RouterLink>
       <svg
         width="7"
@@ -36,7 +36,7 @@ watch(async () => {
       <RouterLink to="/catalog">Каталог</RouterLink>
     </div>
     <main>
-      <div className="aside-filter">
+      <div class="aside-filter">
         <aside>
           <h3>КАТАЛОГ</h3>
           <ul>
@@ -56,8 +56,8 @@ watch(async () => {
             <li>Аксессуары</li>
           </ul>
         </aside>
-        <div className="main">
-          <div className="filter">
+        <div class="main">
+          <div class="filter">
             <span>Размер</span>
             <span>Цвет</span>
             <span>Цена</span>
@@ -80,13 +80,6 @@ watch(async () => {
 </template>
 
 <style scoped>
-.history {
-  margin: 10px 0 25px;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-
 aside ul {
   margin-top: 30px;
 }
