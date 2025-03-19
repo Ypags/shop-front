@@ -72,7 +72,9 @@ function logOut() {
         <h1>ПРОФИЛЬ</h1>
         <h3>Ваша почта: {{ userEmail }}</h3>
         <h3>Ваша роль: {{ userRole }}</h3>
-        <button @click="logOut" class="text-red-500">Выйти из аккаунта</button>
+        <button @click="logOut" class="cursor-pointer text-red-500">
+          Выйти из аккаунта
+        </button>
       </div>
     </main>
   </div>

@@ -1,20 +1,19 @@
 <script setup>
-// import { jwtDecode } from "jwt-decode";
-// import { ref } from "vue";
+import { jwtDecode } from "jwt-decode";
+import { ref } from "vue";
 
-// const hasAdmin = ref(false);
+const hasAdmin = ref(false);
 
-// console.log(localStorage.getItem("token"));
-
-// const userInfo = jwtDecode(localStorage.getItem("token"));
-// console.log(userInfo);
-
-// const userRole =
-//   userInfo["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
-// console.log(userRole);
-// if (userRole == "Admin") {
-//   hasAdmin.value = true;
-// }
+try {
+  const userInfo = jwtDecode(localStorage.getItem("token"));
+  const userRole =
+    userInfo["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+  if (userRole == "Admin") {
+    hasAdmin.value = true;
+  }
+} catch {
+  console.log("Токен отсутствует");
+}
 </script>
 
 <template>

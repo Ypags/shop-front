@@ -1,6 +1,20 @@
 <script setup>
 import Header from "../components/Header/HeaderBeige.vue";
 import Footer from "../components/Footer/Footer.vue";
+
+import { jwtDecode } from "jwt-decode";
+import router from "@/router/router";
+
+try {
+  const userInfo = jwtDecode(localStorage.getItem("token"));
+  const userRole =
+    userInfo["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+  if (userRole != "Admin") {
+    router.push("/сrm");
+  }
+} catch {
+  router.push("/сrm");
+}
 </script>
 
 <template>
