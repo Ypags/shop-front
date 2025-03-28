@@ -8,12 +8,7 @@ import router from "@/router/router";
 const hasToken = ref(false);
 
 const userInfo = computed(() => jwtDecode(localStorage.getItem("token")));
-const userEmail = computed(
-  () =>
-    userInfo.value[
-      "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
-    ] || "",
-);
+const userEmail = computed(() => userInfo.value["email"] || "");
 const userRole = computed(
   () =>
     userInfo.value[
