@@ -3,6 +3,22 @@ import Header from "../components/Header/HeaderBeige.vue";
 import Footer from "../components/Footer/Footer.vue";
 import axios from "axios";
 import { ref } from "vue";
+import router from "@/router/router";
+
+const token = localStorage.getItem("token");
+
+try {
+  const userInfo = jwtDecode(token);
+  const userRole =
+    userInfo["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+  if (userRole != "Admin") {
+    router.push("/сrm");
+  }
+} catch {
+  localStorage.removeItem("token");
+
+  router.push("/sign-in");
+}
 
 const Name = ref("");
 const Decs = ref("");
@@ -10,9 +26,8 @@ const Price = ref();
 const Size = ref([]);
 const Quantity = ref();
 
-const token = localStorage.getItem("token");
-
 const alert = ref(null);
+const alertError = ref(null);
 
 async function sendData() {
   const sizesArray = Size.value.split(",");
@@ -30,16 +45,17 @@ async function sendData() {
     .then(function (response) {
       if (response.status == 200) {
         console.log(response);
+        alert.value = "Продукт успешно создан";
       }
     })
 
     .catch(function (error) {
       if (error.response && error.response.status === 401) {
-        alert.value = "Токен истек. Пожалуйста, войдите снова.";
+        alertError.value = "Токен истек. Пожалуйста, войдите снова.";
         localStorage.removeItem("token");
       } else {
         console.error("Ошибка:", error.message);
-        alert.value = "Произошла ошибка при отправке данных.";
+        alertError.value = "Произошла ошибка при отправке данных.";
       }
     });
   return data;
@@ -86,7 +102,9 @@ async function sendData() {
             placeholder="Осталось"
             required
           />
-          <h3 v-if="alert" class="text-red-600">{{ alert }}</h3>
+          <h3 v-if="alertError" class="text-red-600">{{ alertError }}</h3>
+          <h3 v-if="alert" class="text-green-500">{{ alert }}</h3>
+
           <div>
             <RouterLink
               to="/crm"
