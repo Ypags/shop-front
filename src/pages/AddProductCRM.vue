@@ -3,12 +3,11 @@ import Header from "../components/Header/HeaderBeige.vue";
 import Footer from "../components/Footer/Footer.vue";
 import axios from "axios";
 import { ref } from "vue";
+import { jwtDecode } from "jwt-decode";
 import router from "@/router/router";
 
-const token = localStorage.getItem("token");
-
 try {
-  const userInfo = jwtDecode(token);
+  const userInfo = jwtDecode(localStorage.getItem("token"));
   const userRole =
     userInfo["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
   if (userRole != "Admin") {
@@ -16,7 +15,6 @@ try {
   }
 } catch {
   localStorage.removeItem("token");
-
   router.push("/sign-in");
 }
 
@@ -28,6 +26,7 @@ const Quantity = ref();
 
 const alert = ref(null);
 const alertError = ref(null);
+const token = localStorage.getItem("token");
 
 async function sendData() {
   const sizesArray = Size.value.split(",");
