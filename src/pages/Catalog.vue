@@ -3,16 +3,22 @@ import Header from "../components/Header/HeaderBeige.vue";
 import Card from "../components/Card/ProductCard.vue";
 import Footer from "../components/Footer/Footer.vue";
 
-import { watch, ref } from "vue";
+import axios from "axios";
+import { onMounted, ref } from "vue";
 import { RouterLink } from "vue-router";
 
-let data = ref([]);
+const products = ref([]);
 
-watch(async () => {
-  const response = await fetch(
-    "https://67a5e90b510789ef0df9b1fc.mockapi.io/products",
-  );
-  data.value = await response.json();
+onMounted(async () => {
+  try {
+    const response = await axios
+      .get("http://localhost:5082/api/Product/getAll")
+      .then((res) => res.data);
+    products.value = response;
+    console.log(response);
+  } catch (error) {
+    console.error(error);
+  }
 });
 </script>
 
@@ -65,11 +71,9 @@ watch(async () => {
           </div>
           <div class="product-cards">
             <Card
-              v-for="d in data"
-              :key="d.id"
-              :img="d.img"
-              :name="d.name"
-              :price="d.price"
+              v-for="product in products"
+              :key="product.productId"
+              :product="product"
             />
           </div>
         </div>

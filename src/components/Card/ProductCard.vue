@@ -1,21 +1,17 @@
 <script setup>
-import { watch, ref, defineProps } from "vue";
 import { RouterLink } from "vue-router";
-const props = defineProps({
-  key: String,
-  img: String,
-  name: String,
-  price: String,
+defineProps({
+  product: Object,
 });
 </script>
 
 <template>
-  <RouterLink :to="`/catalog/product/${props.key}`" class="product">
-    <div :key="props.key">
-      <img :src="props.img" alt="" />
-      <h4>{{ props.name }}</h4>
-      <h5>{{ props.price }} ₽</h5>
-      <span>S M L XL</span>
+  <RouterLink :to="`/catalog/product/${product.productId}`" class="product">
+    <div :key="product.key">
+      <img :src="product.img" alt="" />
+      <h4>{{ product.name }}</h4>
+      <h5>{{ product.price }} ₽</h5>
+      <span>{{ product.size }}</span>
     </div>
   </RouterLink>
 </template>

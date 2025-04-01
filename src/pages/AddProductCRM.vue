@@ -1,8 +1,10 @@
 <script setup>
 import Header from "../components/Header/HeaderBeige.vue";
 import Footer from "../components/Footer/Footer.vue";
+
 import axios from "axios";
 import { ref } from "vue";
+
 import { jwtDecode } from "jwt-decode";
 import router from "@/router/router";
 
@@ -24,7 +26,6 @@ const Price = ref();
 const Size = ref([]);
 const Quantity = ref();
 
-const alert = ref(null);
 const alertError = ref(null);
 const token = localStorage.getItem("token");
 
@@ -43,8 +44,9 @@ async function sendData() {
     })
     .then(function (response) {
       if (response.status == 200) {
+        router.push("/crm");
         console.log(response);
-        alert.value = "Продукт успешно создан";
+        window.alert("Продукт успешно создан");
       }
     })
 
@@ -102,7 +104,6 @@ async function sendData() {
             required
           />
           <h3 v-if="alertError" class="text-red-600">{{ alertError }}</h3>
-          <h3 v-if="alert" class="text-green-500">{{ alert }}</h3>
 
           <div>
             <RouterLink

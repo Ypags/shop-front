@@ -1,6 +1,10 @@
 <script setup>
 import Header from "../components/Header/HeaderBeige.vue";
 import Footer from "../components/Footer/Footer.vue";
+import Card from "../components/Card/ProductCardCRM.vue";
+
+import axios from "axios";
+import { onMounted, ref } from "vue";
 
 import { jwtDecode } from "jwt-decode";
 import router from "@/router/router";
@@ -15,6 +19,23 @@ try {
 } catch {
   router.push("/сrm");
 }
+
+const products = ref([]);
+
+// const getProducts = async () => {
+
+// };
+onMounted(async () => {
+  try {
+    const response = await axios
+      .get("http://localhost:5082/api/Product/getAll")
+      .then((res) => res.data);
+    products.value = response;
+    console.log(response);
+  } catch (error) {
+    console.error(error);
+  }
+});
 </script>
 
 <template>
@@ -30,22 +51,11 @@ try {
     </div>
   </div>
   <main class="container my-12">
-    <section class="my-3 flex items-center justify-between">
-      <div class="flex">
-        <img src="../assets/img/CRM/crm-item1.jpg" alt="" />
-        <div class="ml-3">
-          <p class="text-beige mb-4">арт. 1589956</p>
-          <h5>Кремовое пальто</h5>
-        </div>
-      </div>
-      <span>XXS XS S M L</span>
-      <span class="border-1 px-4 py-2 font-bold">3150 ₽</span>
-      <div class="flex gap-5">
-        <img src="../assets/img/crm/edit.svg" alt="" />
-        <img src="../assets/img/crm/delete.svg" alt="" />
-      </div>
-    </section>
-    <hr class="bg-mainGray" />
+    <Card
+      v-for="product in products"
+      :key="product.productId"
+      :product="product"
+    />
   </main>
   <Footer></Footer>
 </template>

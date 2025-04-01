@@ -1,18 +1,20 @@
 <script setup>
 import Header from "../components/Header/HeaderBeige.vue";
 import Footer from "../components/Footer/Footer.vue";
+import { useRoute } from "vue-router";
+import { onMounted, ref, watch } from "vue";
+import axios from "axios";
 
-const props = defineProps({
-  key: String,
-});
-//тут настроить кароче и все
-const data = ref([]);
+const route = useRoute(); // Получаем параметры маршрута
+const product = ref();
 
-watch(async () => {
-  const response = await fetch(
-    `https://67a5e90b510789ef0df9b1fc.mockapi.io/products/${props.key}}`,
+onMounted(async () => {
+  const productId = route.params.id; // Берём `id` из URL
+  const response = await axios.get(
+    `http://localhost:5082/api/Product/getById?id=${productId}`,
   );
-  data.value = await response.json();
+  product.value = response;
+  console.log(response);
 });
 </script>
 
@@ -47,6 +49,11 @@ watch(async () => {
         />
       </svg>
       <RouterLink to="/catalog">Куртка</RouterLink>
+    </div>
+    <div v-for="pd in product" :key="pd.productId" :product="pd">
+      <h2>{{ pd.name }}</h2>
+      <h2>{{ pd.price }}</h2>
+      <h2>{{ pd.size }}</h2>
     </div>
   </div>
   <Footer></Footer>
