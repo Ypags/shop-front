@@ -22,9 +22,6 @@ try {
 
 const products = ref([]);
 
-// const getProducts = async () => {
-
-// };
 onMounted(async () => {
   try {
     const response = await axios
@@ -39,23 +36,24 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Header class="container"></Header>
-  <div class="bg-beige py-4">
-    <div class="text-10 container flex items-center justify-between">
-      <h3 class="text-2xl text-white">Ваши товары</h3>
-      <RouterLink
-        class="cursor-pointer rounded-lg border-1 border-white px-6 py-2 text-white"
-        to="/addProduct"
-        >Добавить товар</RouterLink
-      >
+  <div class="flex h-screen flex-col overflow-y-hidden">
+    <Header class="container"></Header>
+    <div class="bg-beige py-4">
+      <div class="text-10 container flex items-center justify-between">
+        <h3 class="text-2xl text-white">Ваши товары</h3>
+        <RouterLink
+          class="cursor-pointer rounded-lg border-1 border-white px-6 py-2 text-white"
+          to="/addProduct"
+          >Добавить товар</RouterLink
+        >
+      </div>
     </div>
+    <main class="container mb-2 overflow-y-auto">
+      <Card
+        v-for="product in products"
+        :key="product.productId"
+        :product="product"
+      />
+    </main>
   </div>
-  <main class="container my-12">
-    <Card
-      v-for="product in products"
-      :key="product.productId"
-      :product="product"
-    />
-  </main>
-  <Footer></Footer>
 </template>

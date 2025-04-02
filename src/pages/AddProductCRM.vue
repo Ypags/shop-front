@@ -20,23 +20,24 @@ try {
   router.push("/sign-in");
 }
 
-const Name = ref("");
-const Decs = ref("");
-const Price = ref();
-const Size = ref([]);
-const Quantity = ref();
-
+const product = ref({
+  name: "",
+  desc: "",
+  price: "",
+  size: [],
+  quantity: "",
+});
 const alertError = ref(null);
 const token = localStorage.getItem("token");
 
 async function sendData() {
-  const sizesArray = Size.value.split(",");
+  const sizesArray = product.value.size.split(",");
   const newProduct = {
-    name: Name.value,
-    desc: Decs.value,
-    price: Price.value,
+    name: product.value.name,
+    desc: product.value.desc,
+    price: product.value.price,
     size: sizesArray,
-    quantity: Quantity.value,
+    quantity: product.value.quantity,
   };
   const data = await axios
     .post("http://localhost:5082/api/Product/createProd", newProduct, {
@@ -77,28 +78,33 @@ async function sendData() {
         <form class="mt-5 flex flex-col gap-5" @submit.prevent="sendData">
           <input
             class="input"
-            v-model="Name"
+            v-model="product.name"
             type="text"
             placeholder="Название товара"
             required
           />
           <textarea
-            v-model="Decs"
+            v-model="product.desc"
             class="input min-h-50 w-lg"
             placeholder="Описание"
             required
           ></textarea>
-          <input class="input" v-model="Price" type="text" placeholder="Цена" />
           <input
             class="input"
-            v-model="Size"
+            v-model="product.price"
+            type="text"
+            placeholder="Цена"
+          />
+          <input
+            class="input"
+            v-model="product.size"
             type="text"
             placeholder="Размеры"
             required
           />
           <input
             class="input"
-            v-model="Quantity"
+            v-model="product.quantity"
             type="text"
             placeholder="Осталось"
             required

@@ -19,9 +19,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div className="container">
+  <div class="container">
     <Header></Header>
-    <div className="history">
+    <div class="mt-2 mb-5 flex items-center gap-1.5">
       <RouterLink to="/">Главная</RouterLink>
       <svg
         width="7"
@@ -58,11 +58,3 @@ onMounted(async () => {
   </div>
   <Footer></Footer>
 </template>
-
-<style scoped>
-.history {
-  margin: 10px 0 25px;
-  display: flex;
-  gap: 7px;
-}
-</style>
