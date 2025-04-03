@@ -8,7 +8,7 @@ defineProps({
 <template>
   <RouterLink :to="`/catalog/product/${product.productId}`" class="product">
     <div :key="product.key">
-      <img :src="product.img" alt="" />
+      <img :src="product.imageUrl[0]" alt="" />
       <h4>{{ product.name }}</h4>
       <h5>{{ product.price }} ₽</h5>
       <span>{{ product.size }}</span>

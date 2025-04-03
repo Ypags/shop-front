@@ -1,6 +1,5 @@
 <script setup>
 import Header from "../components/Header/HeaderBeige.vue";
-import Footer from "../components/Footer/Footer.vue";
 import Card from "../components/Card/ProductCardCRM.vue";
 
 import axios from "axios";

@@ -8,7 +8,6 @@ import crm from "../pages/CRM.vue";
 import addProduct from "../pages/AddProductCRM.vue";
 import Catalog from "../pages/Catalog.vue";
 import Product from "../pages/Product.vue";
-import Test from "../pages/Test.vue";
 
 const routes = [
   { path: "/:pathMatch(.*)*", component: NotFound },
@@ -20,7 +19,6 @@ const routes = [
   { path: "/catalog/product/:id", component: Product },
   { path: "/crm", component: crm },
   { path: "/addProduct", component: addProduct },
-  { path: "/test", component: Test },
 ];
 
 const router = createRouter({

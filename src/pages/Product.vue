@@ -2,7 +2,7 @@
 import Header from "../components/Header/HeaderBeige.vue";
 import Footer from "../components/Footer/Footer.vue";
 import { useRoute } from "vue-router";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref } from "vue";
 import axios from "axios";
 
 const route = useRoute(); // Получаем параметры маршрута
@@ -51,6 +51,7 @@ onMounted(async () => {
       <RouterLink to="/catalog">Куртка</RouterLink>
     </div>
     <div v-for="pd in product" :key="pd.productId" :product="pd">
+      <div><img class="w-50" :src="pd.imageUrl" alt="" /></div>
       <h2>{{ pd.name }}</h2>
       <h2>{{ pd.price }}</h2>
       <h2>{{ pd.size }}</h2>

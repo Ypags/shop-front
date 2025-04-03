@@ -7,7 +7,7 @@ defineProps({
 <template>
   <section class="my-3 grid grid-cols-4 items-center gap-4">
     <div class="flex">
-      <img src="../../assets/img/CRM/crm-item1.jpg" alt="" />
+      <img class="h-25 w-25" :src="product.imageUrl[0]" alt="" />
       <div class="ml-3">
         <p class="text-beige mb-4">арт. {{ product.articleNumber }}</p>
         <h5>{{ product.name }}</h5>

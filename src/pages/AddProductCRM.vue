@@ -26,22 +26,36 @@ const product = ref({
   price: "",
   size: [],
   quantity: "",
+  images: [],
 });
 const alertError = ref(null);
 const token = localStorage.getItem("token");
 
+function handleImageUpload(event) {
+  const file = event.target.files;
+  // const imageUrl = URL.createObjectURL(file);
+  // product.value.images = [imageUrl];
+  // console.log(product.value.images)
+  product.value.images = file[0];
+}
+
 async function sendData() {
   const sizesArray = product.value.size.split(",");
-  const newProduct = {
-    name: product.value.name,
-    desc: product.value.desc,
-    price: product.value.price,
-    size: sizesArray,
-    quantity: product.value.quantity,
-  };
+  const formData = new FormData();
+  formData.append("name", product.value.name);
+  formData.append("desc", product.value.desc);
+  formData.append("price", product.value.price);
+  formData.append("size", sizesArray);
+  formData.append("quantity", product.value.quantity);
+  formData.append("images", product.value.images);
+
   const data = await axios
-    .post("http://localhost:5082/api/Product/createProd", newProduct, {
-      headers: { Authorization: `Bearer ${token}` },
+    .post("http://localhost:5082/api/Product/createProd", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        // Важно! Говорим серверу, что отправляем файлы
+        "Content-Type": "multipart/form-data",
+      },
     })
     .then(function (response) {
       if (response.status == 200) {
@@ -54,7 +68,10 @@ async function sendData() {
     .catch(function (error) {
       if (error.response && error.response.status === 401) {
         alertError.value = "Токен истек. Пожалуйста, войдите снова.";
-        localStorage.removeItem("token");
+        // localStorage.removeItem("token");
+      } else if (error.response && error.response.status === 400) {
+        alertError.value =
+          "Cервер не может обработать данные в том виде, в котором вы их отправляете";
       } else {
         console.error("Ошибка:", error.message);
         alertError.value = "Произошла ошибка при отправке данных.";
@@ -70,7 +87,17 @@ async function sendData() {
     <main class="flex">
       <div>
         <div class="rounded-md border-1 border-dashed border-[#25252548] p-4">
-          <img src="../assets/img/CRM/Group 67.png" alt="" />
+          <input
+            type="file"
+            @change="handleImageUpload"
+            multiple
+            accept="image/*"
+          />
+          <img
+            v-if="product.images.length > 0"
+            :src="product.images[0]"
+            class="mt-4 max-w-[200px]"
+          />
         </div>
       </div>
       <div class="ml-15">
@@ -92,7 +119,7 @@ async function sendData() {
           <input
             class="input"
             v-model="product.price"
-            type="text"
+            type="number"
             placeholder="Цена"
           />
           <input
@@ -105,7 +132,7 @@ async function sendData() {
           <input
             class="input"
             v-model="product.quantity"
-            type="text"
+            type="number"
             placeholder="Осталось"
             required
           />
