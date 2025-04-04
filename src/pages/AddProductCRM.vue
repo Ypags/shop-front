@@ -8,6 +8,9 @@ import { ref } from "vue";
 import { jwtDecode } from "jwt-decode";
 import router from "@/router/router";
 
+const alertError = ref(null);
+const token = localStorage.getItem("token");
+
 try {
   const userInfo = jwtDecode(localStorage.getItem("token"));
   const userRole =
@@ -26,26 +29,22 @@ const product = ref({
   price: "",
   size: [],
   quantity: "",
-  images: [],
+  images: null,
 });
-const alertError = ref(null);
-const token = localStorage.getItem("token");
 
 function handleImageUpload(event) {
   const file = event.target.files;
-  // const imageUrl = URL.createObjectURL(file);
-  // product.value.images = [imageUrl];
-  // console.log(product.value.images)
   product.value.images = file[0];
 }
 
+const availableSizes = ref(["XS", "S", "M", "L", "XL", "XXL"]);
+
 async function sendData() {
-  const sizesArray = product.value.size.split(",");
   const formData = new FormData();
   formData.append("name", product.value.name);
   formData.append("desc", product.value.desc);
   formData.append("price", product.value.price);
-  formData.append("size", sizesArray);
+  formData.append("size", product.value.size);
   formData.append("quantity", product.value.quantity);
   formData.append("images", product.value.images);
 
@@ -53,7 +52,6 @@ async function sendData() {
     .post("http://localhost:5082/api/Product/createProd", formData, {
       headers: {
         Authorization: `Bearer ${token}`,
-        // Важно! Говорим серверу, что отправляем файлы
         "Content-Type": "multipart/form-data",
       },
     })
@@ -68,7 +66,7 @@ async function sendData() {
     .catch(function (error) {
       if (error.response && error.response.status === 401) {
         alertError.value = "Токен истек. Пожалуйста, войдите снова.";
-        // localStorage.removeItem("token");
+        localStorage.removeItem("token");
       } else if (error.response && error.response.status === 400) {
         alertError.value =
           "Cервер не может обработать данные в том виде, в котором вы их отправляете";
@@ -82,75 +80,190 @@ async function sendData() {
 </script>
 
 <template>
-  <div class="container">
-    <Header></Header>
-    <main class="flex">
-      <div>
-        <div class="rounded-md border-1 border-dashed border-[#25252548] p-4">
-          <input
-            type="file"
-            @change="handleImageUpload"
-            multiple
-            accept="image/*"
-          />
-          <img
-            v-if="product.images.length > 0"
-            :src="product.images[0]"
-            class="mt-4 max-w-[200px]"
-          />
+  <div class="flex min-h-screen flex-col bg-gray-50">
+    <Header class="container"></Header>
+
+    <!-- Header Section -->
+    <div class="bg-beige py-4">
+      <div class="container mx-auto flex h-8 items-center px-4">
+        <RouterLink
+          to="/crm"
+          class="flex items-center space-x-2 text-white hover:text-white/80"
+        >
+          <svg
+            class="h-5 w-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
+          </svg>
+          <span class="text-xl">Назад</span>
+        </RouterLink>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto flex-1 px-4 py-8">
+      <div class="mx-auto max-w-6xl">
+        <div class="rounded-xl bg-white p-8 shadow-sm">
+          <h2 class="mb-8 text-2xl font-semibold text-gray-800">
+            Добавление товара
+          </h2>
+
+          <div class="flex gap-8">
+            <!-- Image Upload Section -->
+            <div class="w-1/2">
+              <div
+                class="rounded-lg border-2 border-dashed border-gray-200 bg-gray-50 p-8 text-center transition-colors hover:border-gray-300"
+              >
+                <input
+                  type="file"
+                  @change="handleImageUpload"
+                  accept="image/*"
+                  class="hidden"
+                  id="file-upload"
+                  required
+                />
+                <label for="file-upload" class="cursor-pointer">
+                  <div class="space-y-4">
+                    <svg
+                      class="mx-auto h-12 w-12 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      />
+                    </svg>
+                    <p class="text-sm text-gray-500">
+                      Нажмите для загрузки изображения
+                    </p>
+                  </div>
+                </label>
+                <img
+                  v-if="product.images"
+                  :src="URL.createObjectURL(product.images)"
+                  class="mx-auto mt-6 max-h-64 rounded-lg object-cover shadow-sm"
+                />
+              </div>
+            </div>
+
+            <!-- Form Section -->
+            <div class="w-1/2">
+              <form class="space-y-6" @submit.prevent="sendData">
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700"
+                    >Название товара</label
+                  >
+                  <input
+                    v-model="product.name"
+                    type="text"
+                    required
+                    class="input focus:border-beige focus:ring-beige w-full rounded-md border-gray-200 py-0.5"
+                    placeholder="Введите название"
+                  />
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700"
+                    >Описание</label
+                  >
+                  <textarea
+                    v-model="product.desc"
+                    required
+                    class="input focus:border-beige focus:ring-beige min-h-[120px] w-full rounded-md border-gray-200 py-0.5"
+                    placeholder="Введите описание товара"
+                  ></textarea>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700"
+                      >Цена</label
+                    >
+                    <input
+                      v-model="product.price"
+                      type="number"
+                      required
+                      class="input focus:border-beige focus:ring-beige w-full rounded-md border-gray-200 py-0.5"
+                      placeholder="Введите цену"
+                    />
+                  </div>
+
+                  <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700"
+                      >Количество</label
+                    >
+                    <input
+                      v-model="product.quantity"
+                      type="number"
+                      required
+                      class="input focus:border-beige focus:ring-beige w-full rounded-md border-gray-200 py-0.5"
+                      placeholder="Введите количество"
+                    />
+                  </div>
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700"
+                    >Размеры</label
+                  >
+
+                  <div class="grid grid-cols-3 gap-2">
+                    <label
+                      v-for="size in availableSizes"
+                      :key="size"
+                      class="flex cursor-pointer items-center space-x-2 rounded-md border border-gray-200 p-2 hover:bg-gray-50"
+                    >
+                      <input
+                        type="checkbox"
+                        :value="size"
+                        v-model="product.size"
+                        class="h-4 w-4 rounded border-gray-300"
+                      />
+                      <span class="text-sm text-gray-700">{{ size }}</span>
+                    </label>
+                  </div>
+                  <h2>Выбранные размеры: {{ product.size }}</h2>
+                </div>
+
+                <div
+                  v-if="alertError"
+                  class="rounded-lg bg-red-50 p-4 text-sm text-red-600"
+                >
+                  {{ alertError }}
+                </div>
+
+                <div class="flex justify-end space-x-4 pt-4">
+                  <RouterLink
+                    to="/crm"
+                    class="rounded-lg border border-gray-200 px-6 py-2.5 text-gray-700 transition-colors hover:bg-gray-50"
+                  >
+                    Отмена
+                  </RouterLink>
+                  <button
+                    type="submit"
+                    class="bg-beige hover:bg-beige/90 cursor-pointer rounded-lg px-6 py-2.5 text-white transition-colors"
+                  >
+                    Сохранить
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="ml-15">
-        <RouterLink to="/crm">← Назад</RouterLink>
-        <form class="mt-5 flex flex-col gap-5" @submit.prevent="sendData">
-          <input
-            class="input"
-            v-model="product.name"
-            type="text"
-            placeholder="Название товара"
-            required
-          />
-          <textarea
-            v-model="product.desc"
-            class="input min-h-50 w-lg"
-            placeholder="Описание"
-            required
-          ></textarea>
-          <input
-            class="input"
-            v-model="product.price"
-            type="number"
-            placeholder="Цена"
-          />
-          <input
-            class="input"
-            v-model="product.size"
-            type="text"
-            placeholder="Размеры"
-            required
-          />
-          <input
-            class="input"
-            v-model="product.quantity"
-            type="number"
-            placeholder="Осталось"
-            required
-          />
-          <h3 v-if="alertError" class="text-red-600">{{ alertError }}</h3>
-
-          <div>
-            <RouterLink
-              to="/crm"
-              class="button--white mr-10 rounded-md px-7 py-2.5"
-              >Отмена</RouterLink
-            >
-            <button class="button--beige h-10 w-35 rounded-md">
-              Сохранить
-            </button>
-          </div>
-        </form>
-      </div>
     </main>
+    <Footer></Footer>
   </div>
-  <Footer></Footer>
 </template>

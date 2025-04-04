@@ -4,9 +4,10 @@ import Footer from "../components/Footer/Footer.vue";
 import { jwtDecode } from "jwt-decode";
 import { ref, computed } from "vue";
 import router from "@/router/router";
+import axios from "axios";
 
 const hasToken = ref(false);
-
+const token = ref(null);
 const userInfo = computed(() => jwtDecode(localStorage.getItem("token")));
 const userEmail = computed(() => userInfo.value["email"] || "");
 const userRole = computed(
@@ -27,6 +28,25 @@ if (localStorage.getItem("token")) {
 function logOut() {
   localStorage.removeItem("token");
   router.push("/");
+}
+
+async function sendData() {
+  const newUser = {
+    email: "admin@gmail.com",
+    password: "admin",
+  };
+  const data = await axios
+    .post("http://localhost:5082/api/Auth/login", newUser)
+    .then(function (response) {
+      if (response.status == 200) {
+        console.log(response);
+        token.value = response.data.token;
+        localStorage.setItem("token", response.data.token);
+        if (localStorage.getItem("token")) {
+          router.push("/");
+        }
+      }
+    });
 }
 </script>
 
@@ -57,6 +77,12 @@ function logOut() {
         <h2 class="mb-8 text-2xl font-medium text-gray-900">
           Вы не зашли в аккаунт
         </h2>
+        <button
+          @click="sendData"
+          class="flex cursor-pointer items-center text-green-400 transition-colors hover:text-green-600"
+        >
+          Войти как админ
+        </button>
         <div class="space-x-4">
           <RouterLink
             to="/sign-up"
