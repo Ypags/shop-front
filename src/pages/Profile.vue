@@ -8,6 +8,11 @@ import axios from "axios";
 
 const hasToken = ref(false);
 const token = ref(null);
+
+if (localStorage.getItem("token")) {
+  hasToken.value = true;
+}
+
 const userInfo = computed(() => jwtDecode(localStorage.getItem("token")));
 const userEmail = computed(() => userInfo.value["email"] || "");
 const userRole = computed(
@@ -18,12 +23,8 @@ const userRole = computed(
 );
 const userNickname = computed(() => userInfo.value["nickname"] || "");
 const userName = computed(() => userInfo.value["name"] || "");
-const userSurname = computed(() => userInfo.value["surname"] || "");
+const userSurname = computed(() => userInfo.value["family_name"] || "");
 const userAddress = computed(() => userInfo.value["address"] || "");
-
-if (localStorage.getItem("token")) {
-  hasToken.value = true;
-}
 
 function logOut() {
   localStorage.removeItem("token");
@@ -33,7 +34,8 @@ function logOut() {
 async function sendData() {
   const newUser = {
     email: "admin@gmail.com",
-    password: "admin",
+    password: "admin123",
+    rememberMe: true,
   };
   const data = await axios
     .post("http://localhost:5082/api/Auth/login", newUser)
