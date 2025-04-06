@@ -2,7 +2,7 @@
 
 @font-face {
   font-family: "Raleway";
-  src: url(../public/fonts/Raleway-VariableFont_wght.ttf);
+  src: url("../../public/fonts/Raleway-VariableFont_wght.ttf");
 }
 
 @theme {

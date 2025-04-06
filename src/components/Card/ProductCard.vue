@@ -11,7 +11,7 @@ defineProps({
       <img :src="product.imageUrl[0]" alt="" />
       <h4>{{ product.name }}</h4>
       <h5>{{ product.price }} ₽</h5>
-      <span>{{ product.size }}</span>
+      <span v-for="size in product.size" :key="size">{{ size }}</span>
     </div>
   </RouterLink>
 </template>

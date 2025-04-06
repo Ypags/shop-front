@@ -13,14 +13,14 @@ onMounted(async () => {
   const response = await axios.get(
     `http://localhost:5082/api/Product/getById?id=${productId}`,
   );
-  product.value = response;
+  product.value = response.data;
   console.log(response);
 });
 </script>
 
 <template>
-  <div class="container">
-    <Header></Header>
+  <div v-if="product" class="container">
+    <Header />
     <div class="mt-2 mb-5 flex items-center gap-1.5">
       <RouterLink to="/">Главная</RouterLink>
       <svg
@@ -48,14 +48,88 @@ onMounted(async () => {
           fill="#e0bea2"
         />
       </svg>
-      <RouterLink to="/catalog">Куртка</RouterLink>
+      <span class="cursor-pointer">{{ product.name }}</span>
     </div>
-    <div v-for="pd in product" :key="pd.productId" :product="pd">
-      <div><img class="w-50" :src="pd.imageUrl" alt="" /></div>
-      <h2>{{ pd.name }}</h2>
-      <h2>{{ pd.price }}</h2>
-      <h2>{{ pd.size }}</h2>
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+      <!-- Левая часть - Галерея изображений -->
+      <div class="flex gap-4">
+        <div class="flex flex-col gap-4">
+          <div class="h-20 w-20 cursor-pointer">
+            <img
+              src="./assets/img/product1.jpg"
+              alt=""
+              class="h-full w-full border object-cover"
+            />
+          </div>
+          <div class="h-20 w-20 cursor-pointer">
+            <img
+              src="./assets/images/product1.jpg"
+              alt=""
+              class="h-full w-full border object-cover"
+            />
+          </div>
+          <div class="h-20 w-20 cursor-pointer">
+            <img
+              src="./assets/images/product1.jpg"
+              alt=""
+              class="h-full w-full border object-cover"
+            />
+          </div>
+          <div class="h-20 w-20 cursor-pointer">
+            <img
+              src="./assets/images/product1.jpg"
+              alt=""
+              class="h-full w-full border object-cover"
+            />
+          </div>
+        </div>
+        <div class="flex-1">
+          <img
+            :src="product.imageUrl"
+            alt=""
+            class="aspect-[3/4] w-full object-cover"
+          />
+        </div>
+      </div>
+
+      <!-- Правая часть - Информация о продукте -->
+      <div class="flex flex-col">
+        <span class="text-beige">арт. {{ product.articleNumber }}</span>
+        <h1 class="text-2xl font-light">{{ product.name }}</h1>
+        <p class="my-6 text-xl">{{ product.price }} ₽</p>
+
+        <!-- Выбор размера -->
+        <div class="flex flex-col gap-2">
+          <select class="w-full appearance-none border bg-white p-3">
+            <option value="" disabled selected>Выберите размер</option>
+            <option v-for="size in product.size" :key="size">
+              {{ size }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Подробности -->
+        <div class="border-t">
+          <div class="py-4">
+            <h3 class="mb-2 font-medium">Подробности</h3>
+            <div class="text-sm text-gray-600">
+              <p class="mb-2">{{ product.description }}</p>
+              <p>Состав: 60% Шерсть, 40% Полиэстер</p>
+              <p>Подкладка: 100% Полиэстер</p>
+              <p>Утеплитель: 40% Пух, 60% Перо</p>
+              <ul class="mt-2">
+                <li>- Не стирать</li>
+                <li>- Гладить при температуре утюга до 110°С</li>
+                <li>- Не отбеливать</li>
+                <li>- Сухая химчистка</li>
+                <li>- Барабанная сушка запрещена</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-  <Footer></Footer>
+  <Footer />
 </template>

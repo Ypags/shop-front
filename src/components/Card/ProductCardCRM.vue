@@ -21,7 +21,12 @@ defineProps({
         <h5 class="font-medium text-gray-800">{{ product.name }}</h5>
       </div>
     </div>
-    <span class="justify-self-center text-gray-600">{{ product.size }}</span>
+    <span
+      v-for="size in product.size"
+      :key="size"
+      class="justify-self-center text-gray-600"
+      >{{ size }}</span
+    >
     <span
       class="w-23 justify-self-center border-1 py-2 text-center font-bold text-gray-800"
       >{{ product.price }}₽</span
