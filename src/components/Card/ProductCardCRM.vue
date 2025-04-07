@@ -1,7 +1,34 @@
 <script setup>
-defineProps({
+import Toast from "@/components/UI/toast.vue";
+import axios from "axios";
+import router from "@/router/router";
+import { useToastStore } from "@/stores/toast";
+const toastStore = useToastStore();
+
+const token = localStorage.getItem("token");
+
+const props = defineProps({
   product: Object,
 });
+
+async function deleteProduct() {
+  try {
+    await axios.delete(
+      `http://localhost:5082/api/Product/delById?id=${props.product.productId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    toastStore.showToast("Товар успешно удален", "success");
+    setTimeout(() => {
+      router.go(0);
+    }, 1000);
+  } catch (error) {
+    console.error(error);
+  }
+}
 </script>
 
 <template>
@@ -38,6 +65,7 @@ defineProps({
         alt=""
       />
       <img
+        @click="deleteProduct"
         class="cursor-pointer transition-opacity hover:opacity-80"
         src="../../assets/img/CRM/delete.svg"
         alt=""

@@ -1,12 +1,12 @@
 <script setup>
 import { ref } from "vue";
 import axios from "axios";
+import Toast from "@/components/UI/toast.vue";
+import { useToastStore } from "@/stores/toast";
 
 import { useRouter } from "vue-router";
 const router = useRouter();
-
-const alertError = ref(null);
-
+const toastStore = useToastStore();
 const user = ref({
   email: "",
   password: "",
@@ -23,13 +23,15 @@ async function sendData() {
     firstName: user.value.firstName,
     surName: user.value.surName,
   };
-  console.log(newUser);
 
   const data = await axios
     .post("http://localhost:5082/api/Auth/register", newUser)
     .then(function (response) {
       console.log(response);
-      router.push("/sign-in");
+      toastStore.showToast("Вы успешно зарегистрировались", "success");
+      setTimeout(() => {
+        router.push("/sign-in");
+      }, 1000);
       // const newUser = {
       //   email: user.value.email,
       //   password: user.value.password,
@@ -45,13 +47,18 @@ async function sendData() {
 
     .catch(function (error) {
       if (error.response && error.response.status === 415) {
-        alertError.value = "Формат содержимого не поддерживается сервером";
+        toastStore.showToast(
+          "Формат содержимого не поддерживается сервером",
+          "error",
+        );
       } else if (error.response && error.response.status === 400) {
-        alertError.value =
-          "Cервер не может обработать данные в том виде, в котором вы их отправляете";
+        toastStore.showToast(
+          "Cервер не может обработать данные в том виде, в котором вы их отправляете",
+          "error",
+        );
       } else {
         console.error("Ошибка:", error.message);
-        alertError.value = "Произошла ошибка при регистрации";
+        toastStore.showToast("Произошла ошибка при регистрации", "error");
       }
     });
   return data;
@@ -59,6 +66,7 @@ async function sendData() {
 </script>
 
 <template>
+  <Toast />
   <div
     class="flex min-h-screen flex-col justify-center bg-gray-50 py-12 sm:px-6 lg:px-8"
   >
@@ -153,13 +161,6 @@ async function sendData() {
                 placeholder="Ваш пароль*"
               />
             </div>
-          </div>
-
-          <div
-            v-if="alertError"
-            class="rounded-lg bg-red-50 p-4 text-sm text-red-600"
-          >
-            {{ alertError }}
           </div>
 
           <div>

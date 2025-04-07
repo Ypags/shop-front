@@ -1,6 +1,7 @@
 <script setup>
 import Header from "../components/Header/HeaderBeige.vue";
 import Card from "../components/Card/ProductCardCRM.vue";
+import Toast from "@/components/UI/toast.vue";
 
 import axios from "axios";
 import { onMounted, ref } from "vue";
@@ -35,6 +36,7 @@ onMounted(async () => {
 </script>
 
 <template>
+  <Toast />
   <div class="flex min-h-screen flex-col bg-gray-50">
     <Header class="container"></Header>
 

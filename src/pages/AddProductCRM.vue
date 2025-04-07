@@ -1,6 +1,8 @@
 <script setup>
 import Header from "../components/Header/HeaderBeige.vue";
 import Footer from "../components/Footer/Footer.vue";
+import Toast from "@/components/UI/toast.vue";
+import { useToastStore } from "@/stores/toast";
 
 import axios from "axios";
 import { ref } from "vue";
@@ -8,8 +10,9 @@ import { ref } from "vue";
 import { jwtDecode } from "jwt-decode";
 import router from "@/router/router";
 
-const alertError = ref(null);
+const toastStore = useToastStore();
 const token = localStorage.getItem("token");
+const imagePreview = ref(null);
 
 try {
   const userInfo = jwtDecode(localStorage.getItem("token"));
@@ -33,8 +36,9 @@ const product = ref({
 });
 
 function handleImageUpload(event) {
-  const file = event.target.files;
-  product.value.images = file[0];
+  const file = event.target.files[0];
+  product.value.images = file;
+  imagePreview.value = window.URL.createObjectURL(file);
 }
 
 const availableSizes = ref(["XS", "S", "M", "L", "XL", "XXL"]);
@@ -57,22 +61,31 @@ async function sendData() {
     })
     .then(function (response) {
       if (response.status == 200) {
-        router.push("/crm");
         console.log(response);
-        window.alert("Продукт успешно создан");
+        toastStore.showToast("Товар успешно добавлен", "success");
+        setTimeout(() => {
+          router.go(-1);
+        }, 2000);
       }
     })
-
     .catch(function (error) {
       if (error.response && error.response.status === 401) {
-        alertError.value = "Токен истек. Пожалуйста, войдите снова.";
-        localStorage.removeItem("token");
+        toastStore.showToast(
+          "Токен истек. Пожалуйста, войдите снова.",
+          "error",
+        );
+        setTimeout(() => {
+          router.push("/crm");
+          localStorage.removeItem("token");
+        }, 2000);
       } else if (error.response && error.response.status === 400) {
-        alertError.value =
-          "Cервер не может обработать данные в том виде, в котором вы их отправляете";
+        toastStore.showToast(
+          "Cервер не может обработать данные в том виде, в котором вы их отправляете",
+          "error",
+        );
       } else {
         console.error("Ошибка:", error.message);
-        alertError.value = "Произошла ошибка при отправке данных.";
+        toastStore.showToast("Произошла ошибка при отправке данных.", "error");
       }
     });
   return data;
@@ -80,6 +93,7 @@ async function sendData() {
 </script>
 
 <template>
+  <Toast />
   <div class="flex min-h-screen flex-col bg-gray-50">
     <Header class="container"></Header>
 
@@ -151,8 +165,8 @@ async function sendData() {
                   </div>
                 </label>
                 <img
-                  v-if="product.images"
-                  :src="URL.createObjectURL(product.images)"
+                  v-if="imagePreview"
+                  :src="imagePreview"
                   class="mx-auto mt-6 max-h-64 rounded-lg object-cover shadow-sm"
                 />
               </div>
@@ -235,13 +249,6 @@ async function sendData() {
                     </label>
                   </div>
                   <h2>Выбранные размеры: {{ product.size }}</h2>
-                </div>
-
-                <div
-                  v-if="alertError"
-                  class="rounded-lg bg-red-50 p-4 text-sm text-red-600"
-                >
-                  {{ alertError }}
                 </div>
 
                 <div class="flex justify-end space-x-4 pt-4">

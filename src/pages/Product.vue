@@ -84,7 +84,7 @@ onMounted(async () => {
             />
           </div>
         </div>
-        <div class="flex-1">
+        <div class="w-150">
           <img
             :src="product.imageUrl"
             alt=""

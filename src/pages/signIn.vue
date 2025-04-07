@@ -2,15 +2,15 @@
 import { ref } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
+import Toast from "@/components/UI/toast.vue";
+import { useToastStore } from "@/stores/toast";
 
 const router = useRouter();
-const token = ref(null);
+const toastStore = useToastStore();
 
 const email = ref("");
 const pass = ref("");
 const rememberMe = ref(false);
-
-const alert = ref(null);
 
 async function sendData() {
   const newUser = {
@@ -23,23 +23,27 @@ async function sendData() {
     .then(function (response) {
       if (response.status == 200) {
         console.log(response);
-        token.value = response.data.token;
         localStorage.setItem("token", response.data.token);
-        if (localStorage.getItem("token")) {
+        toastStore.showToast("Вы успешно авторизованы", "success");
+        setTimeout(() => {
           router.push("/");
-        }
+        }, 1000);
       }
     })
 
     .catch(function (error) {
-      console.log(error);
-      alert.value = "Ошибка. Неправильный пароль";
+      if (error.response && error.response.status === 401) {
+        toastStore.showToast("Неправильная почта или пароль", "error");
+      } else {
+        toastStore.showToast("Произошла ошибка", "error");
+      }
     });
   return data;
 }
 </script>
 
 <template>
+  <Toast />
   <div
     class="flex min-h-screen flex-col justify-center bg-gray-50 py-12 sm:px-6 lg:px-8"
   >
@@ -106,10 +110,6 @@ async function sendData() {
                 Забыли пароль?
               </a>
             </div>
-          </div>
-
-          <div v-if="alert" class="text-center text-sm text-red-600">
-            {{ alert }}
           </div>
 
           <div>
