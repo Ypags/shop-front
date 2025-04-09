@@ -43,52 +43,56 @@ function handleImageUpload(event) {
 
 const availableSizes = ref(["XS", "S", "M", "L", "XL", "XXL"]);
 
+const isLoading = ref(false);
+
 async function sendData() {
+  isLoading.value = true;
   const formData = new FormData();
   formData.append("name", product.value.name);
   formData.append("desc", product.value.desc);
   formData.append("price", product.value.price);
-  formData.append("size", product.value.size);
+  product.value.size.forEach((size) => {
+    formData.append("size", size);
+  });
+
   formData.append("quantity", product.value.quantity);
   formData.append("images", product.value.images);
 
-  const data = await axios
-    .post("http://localhost:5082/api/Product/createProd", formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
+  try {
+    const response = await axios.post(
+      "http://localhost:5082/api/Product/createProd",
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
       },
-    })
-    .then(function (response) {
-      if (response.status == 200) {
-        console.log(response);
-        toastStore.showToast("Товар успешно добавлен", "success");
-        setTimeout(() => {
-          router.go(-1);
-        }, 2000);
-      }
-    })
-    .catch(function (error) {
-      if (error.response && error.response.status === 401) {
-        toastStore.showToast(
-          "Токен истек. Пожалуйста, войдите снова.",
-          "error",
-        );
-        setTimeout(() => {
-          router.push("/crm");
-          localStorage.removeItem("token");
-        }, 2000);
-      } else if (error.response && error.response.status === 400) {
-        toastStore.showToast(
-          "Cервер не может обработать данные в том виде, в котором вы их отправляете",
-          "error",
-        );
-      } else {
-        console.error("Ошибка:", error.message);
-        toastStore.showToast("Произошла ошибка при отправке данных.", "error");
-      }
-    });
-  return data;
+    );
+
+    if (response.status == 200) {
+      toastStore.showToast("Товар успешно добавлен", "success");
+      router.go(-1);
+    }
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      toastStore.showToast("Токен истек. Пожалуйста, войдите снова.", "error");
+      setTimeout(() => {
+        router.push("/crm");
+        localStorage.removeItem("token");
+      }, 2000);
+    } else if (error.response && error.response.status === 400) {
+      toastStore.showToast(
+        "Cервер не может обработать данные в том виде, в котором вы их отправляете",
+        "error",
+      );
+    } else {
+      console.error("Ошибка:", error.message);
+      toastStore.showToast("Произошла ошибка при отправке данных.", "error");
+    }
+  } finally {
+    isLoading.value = false;
+  }
 }
 </script>
 
@@ -260,9 +264,11 @@ async function sendData() {
                   </RouterLink>
                   <button
                     type="submit"
-                    class="bg-beige hover:bg-beige/90 cursor-pointer rounded-lg px-6 py-2.5 text-white transition-colors"
+                    :disabled="isLoading"
+                    class="bg-beige hover:bg-beige/90 cursor-pointer rounded-lg px-6 py-2.5 text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    Сохранить
+                    <span v-if="isLoading">Сохранение...</span>
+                    <span v-else>Сохранить</span>
                   </button>
                 </div>
               </form>

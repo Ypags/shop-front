@@ -5,9 +5,12 @@ import { jwtDecode } from "jwt-decode";
 import { ref, computed } from "vue";
 import router from "@/router/router";
 import axios from "axios";
+import Toast from "@/components/UI/toast.vue";
+import { useToastStore } from "@/stores/toast";
 
 const hasToken = ref(false);
 const token = ref(null);
+const toastStore = useToastStore();
 
 if (localStorage.getItem("token")) {
   hasToken.value = true;
@@ -28,6 +31,7 @@ const userAddress = computed(() => userInfo.value["address"] || "");
 
 function logOut() {
   localStorage.removeItem("token");
+  toastStore.showToast("Вы успешно вышли из аккаунта", "success");
   router.push("/");
 }
 
@@ -53,6 +57,7 @@ async function sendData() {
 </script>
 
 <template>
+  <Toast />
   <div class="flex min-h-screen flex-col bg-gray-50">
     <Header class="container"></Header>
 

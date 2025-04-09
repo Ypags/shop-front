@@ -1,9 +1,11 @@
 <script setup>
 import Header from "../components/Header/HeaderWhite.vue";
 import Footer from "../components/Footer/Footer.vue";
+import Toast from "@/components/UI/toast.vue";
 </script>
 
 <template>
+  <Toast />
   <main>
     <section class="section-wrapper">
       <Header></Header>

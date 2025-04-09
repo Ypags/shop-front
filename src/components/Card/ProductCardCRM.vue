@@ -48,12 +48,14 @@ async function deleteProduct() {
         <h5 class="font-medium text-gray-800">{{ product.name }}</h5>
       </div>
     </div>
-    <span
-      v-for="size in product.size"
-      :key="size"
-      class="justify-self-center text-gray-600"
-      >{{ size }}</span
-    >
+    <div class="justify-self-center">
+      <span
+        v-for="size in product.size"
+        :key="size"
+        class="ml-3 text-gray-600"
+        >{{ size }}</span
+      >
+    </div>
     <span
       class="w-23 justify-self-center border-1 py-2 text-center font-bold text-gray-800"
       >{{ product.price }}₽</span
