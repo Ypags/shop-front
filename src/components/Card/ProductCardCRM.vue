@@ -1,5 +1,4 @@
 <script setup>
-import Toast from "@/components/UI/toast.vue";
 import axios from "axios";
 import router from "@/router/router";
 import { useToastStore } from "@/stores/toast";

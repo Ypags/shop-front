@@ -1,7 +1,3 @@
-<script setup>
-import Header from "../components/Header/HeaderBeige.vue";
-</script>
-
 <template>
   <div class="flex h-screen flex-col items-center justify-center gap-4">
     <img src="../assets/img/404/404.png" alt="" />

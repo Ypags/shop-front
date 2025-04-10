@@ -1,7 +1,6 @@
 <script setup>
 import Header from "../components/Header/HeaderBeige.vue";
 import Footer from "../components/Footer/Footer.vue";
-import Toast from "@/components/UI/toast.vue";
 import { useToastStore } from "@/stores/toast";
 
 import axios from "axios";
@@ -97,7 +96,6 @@ async function sendData() {
 </script>
 
 <template>
-  <Toast />
   <div class="flex min-h-screen flex-col bg-gray-50">
     <Header class="container"></Header>
 
