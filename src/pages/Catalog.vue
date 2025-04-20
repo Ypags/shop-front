@@ -11,11 +11,11 @@ const products = ref([]);
 
 onMounted(async () => {
   try {
-    const response = await axios
-      .get("http://localhost:5082/api/Product/getAll")
-      .then((res) => res.data);
-    products.value = response;
-    console.log(response);
+    const response = await axios.get(
+      "http://localhost:5082/api/Product/getAll",
+    );
+    console.log("Список товаров", response);
+    products.value = response.data;
   } catch (error) {
     console.error(error);
   }

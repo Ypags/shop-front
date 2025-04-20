@@ -2,8 +2,8 @@
 import { ref } from "vue";
 import axios from "axios";
 import { useToastStore } from "@/stores/toast";
-
 import { useRouter } from "vue-router";
+
 const router = useRouter();
 const toastStore = useToastStore();
 const user = ref({
@@ -23,44 +23,44 @@ async function sendData() {
     surName: user.value.surName,
   };
 
-  const data = await axios
-    .post("http://localhost:5082/api/Auth/register", newUser)
-    .then(function (response) {
-      console.log(response);
-      toastStore.showToast("Вы успешно зарегистрировались", "success");
-      setTimeout(() => {
-        router.push("/sign-in");
-      }, 1000);
-      // const newUser = {
-      //   email: user.value.email,
-      //   password: user.value.password,
-      // };
-      // const data = axios
-      //   .post("http://localhost:5082/api/Auth/login", newUser)
-      //   .then(function (response) {
-      //     console.log(response);
-      //     localStorage.setItem("token", response.data.token);
-      //     router.push("/");
-      //   });
-    })
+  try {
+    // Регистрация
+    const registerResponse = await axios.post(
+      "http://localhost:5082/api/Auth/register",
+      newUser,
+    );
+    console.log("Регистрация", registerResponse);
+    toastStore.showToast("Вы успешно зарегистрировались", "success");
 
-    .catch(function (error) {
-      if (error.response && error.response.status === 415) {
-        toastStore.showToast(
-          "Формат содержимого не поддерживается сервером",
-          "error",
-        );
-      } else if (error.response && error.response.status === 400) {
-        toastStore.showToast(
-          "Cервер не может обработать данные в том виде, в котором вы их отправляете",
-          "error",
-        );
-      } else {
-        console.error("Ошибка:", error.message);
-        toastStore.showToast("Произошла ошибка при регистрации", "error");
-      }
-    });
-  return data;
+    // Войти в аккаунт
+    const sigInUser = {
+      email: user.value.email,
+      password: user.value.password,
+    };
+    const loginResponse = await axios.post(
+      "http://localhost:5082/api/Auth/login",
+      sigInUser,
+    );
+    console.log("Войти в аккаунт", loginResponse);
+    localStorage.setItem("token", loginResponse.data.token);
+    router.push("/");
+  } catch (error) {
+    //Обработка ошибок
+    if (error.response && error.response.status === 415) {
+      toastStore.showToast(
+        "Формат содержимого не поддерживается сервером",
+        "error",
+      );
+    } else if (error.response && error.response.status === 400) {
+      toastStore.showToast(
+        "Cервер не может обработать данные в том виде, в котором вы их отправляете",
+        "error",
+      );
+    } else {
+      console.error("Ошибка:", error.message);
+      toastStore.showToast("Произошла ошибка при регистрации", "error");
+    }
+  }
 }
 </script>
 

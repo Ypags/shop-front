@@ -37,7 +37,6 @@ async function sendData() {
         toastStore.showToast("Произошла ошибка", "error");
       }
     });
-  return data;
 }
 </script>
 
