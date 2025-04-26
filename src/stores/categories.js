@@ -21,7 +21,5 @@ export const useCategoriesStore = defineStore("categories", {
   }),
   getters: {
     getCategories: (state) => state.categories,
-    getCategoryBySlug: (state) => (slug) =>
-      state.categories.find((category) => category.slug === slug),
   },
 });
