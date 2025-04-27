@@ -86,7 +86,7 @@ function cancelEditing() {
 async function sendData() {
   const newUser = {
     email: "admin@gmail.com",
-    password: "admin123",
+    password: "admin12345",
     rememberMe: true,
   };
   try {

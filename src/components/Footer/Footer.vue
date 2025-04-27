@@ -54,7 +54,7 @@
         <span>info@yanki.com</span>
       </div>
     </div>
-    <div class="copyright">Copyright by@AuzeTeam. All rights reserved</div>
+    <div class="copyright">Copyright by@AuzaTeam. All rights reserved</div>
   </footer>
 </template>
 

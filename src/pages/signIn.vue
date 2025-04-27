@@ -23,7 +23,7 @@ async function sendData() {
       if (response.status == 200) {
         console.log(response);
         localStorage.setItem("token", response.data.token);
-        toastStore.showToast("Вы успешно авторизованы", "success");
+        toastStore.showToast("Вы успешно вошли в аккаунт", "success");
         setTimeout(() => {
           router.push("/");
         }, 1000);

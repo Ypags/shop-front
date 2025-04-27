@@ -5,17 +5,25 @@ import { useRoute } from "vue-router";
 import { onMounted, ref } from "vue";
 import axios from "axios";
 
-const route = useRoute(); // Получаем параметры маршрута
+const route = useRoute();
 const product = ref();
+const selectedImage = ref("");
 
+// Отображение продукта по id
 onMounted(async () => {
-  const productId = route.params.id; // Берём `id` из URL
+  const productId = route.params.id;
   const response = await axios.get(
     `http://localhost:5082/api/Product/getById?id=${productId}`,
   );
   product.value = response.data;
+  selectedImage.value = product.value.imageUrl[0];
   console.log(response);
 });
+
+// Выбор изображения
+function selectImage(image) {
+  selectedImage.value = image;
+}
 </script>
 
 <template>
@@ -54,41 +62,21 @@ onMounted(async () => {
     <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
       <!-- Левая часть - Галерея изображений -->
       <div class="flex gap-4">
-        <div class="flex flex-col gap-4">
-          <div class="h-20 w-20 cursor-pointer">
-            <img
-              src="./assets/img/product1.jpg"
-              alt=""
-              class="h-full w-full border object-cover"
-            />
-          </div>
-          <div class="h-20 w-20 cursor-pointer">
-            <img
-              src="./assets/images/product1.jpg"
-              alt=""
-              class="h-full w-full border object-cover"
-            />
-          </div>
-          <div class="h-20 w-20 cursor-pointer">
-            <img
-              src="./assets/images/product1.jpg"
-              alt=""
-              class="h-full w-full border object-cover"
-            />
-          </div>
-          <div class="h-20 w-20 cursor-pointer">
-            <img
-              src="./assets/images/product1.jpg"
-              alt=""
-              class="h-full w-full border object-cover"
-            />
-          </div>
+        <div class="flex w-20 flex-col gap-3">
+          <img
+            v-for="image in product.imageUrl"
+            :key="image"
+            :src="image"
+            @click="selectImage(image)"
+            alt=""
+            class="h-20 w-20 cursor-pointer object-cover hover:opacity-80"
+          />
         </div>
         <div class="w-150">
           <img
-            :src="product.imageUrl"
+            :src="selectedImage"
             alt=""
-            class="aspect-[3/4] w-full object-cover"
+            class="aspect-[3/4] h-150 w-full object-cover"
           />
         </div>
       </div>

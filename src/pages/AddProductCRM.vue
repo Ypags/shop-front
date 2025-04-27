@@ -11,7 +11,7 @@ import router from "@/router/router";
 
 const toastStore = useToastStore();
 const token = localStorage.getItem("token");
-const imagePreview = ref(null);
+const imagePreview = ref([]);
 
 try {
   const userInfo = jwtDecode(localStorage.getItem("token"));
@@ -31,13 +31,13 @@ const product = ref({
   price: "",
   size: [],
   quantity: "",
-  images: null,
+  images: [],
 });
 
 function handleImageUpload(event) {
-  const file = event.target.files[0];
-  product.value.images = file;
-  imagePreview.value = window.URL.createObjectURL(file);
+  const files = event.target.files;
+  product.value.images.push(files[0]);
+  imagePreview.value.push(window.URL.createObjectURL(files[0]));
 }
 
 const availableSizes = ref(["XS", "S", "M", "L", "XL", "XXL"]);
@@ -53,9 +53,10 @@ async function sendData() {
   product.value.size.forEach((size) => {
     formData.append("size", size);
   });
-
   formData.append("quantity", product.value.quantity);
-  formData.append("images", product.value.images);
+  product.value.images.forEach((image) => {
+    formData.append("images", image);
+  });
 
   try {
     const response = await axios.post(
@@ -68,6 +69,11 @@ async function sendData() {
         },
       },
     );
+
+    // Проверяем содержимое FormData
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
 
     if (response.status == 200) {
       toastStore.showToast("Товар успешно добавлен", "success");
@@ -166,11 +172,14 @@ async function sendData() {
                     </p>
                   </div>
                 </label>
-                <img
-                  v-if="imagePreview"
-                  :src="imagePreview"
-                  class="mx-auto mt-6 max-h-64 rounded-lg object-cover shadow-sm"
-                />
+                <div class="grid grid-cols-2 gap-2">
+                  <img
+                    v-for="(image, index) in imagePreview"
+                    :key="index"
+                    :src="image"
+                    class="mx-auto mt-6 max-h-64 rounded-lg object-cover shadow-sm"
+                  />
+                </div>
               </div>
             </div>
 

@@ -39,5 +39,6 @@ defineProps({
 
 .product span {
   color: #25252550;
+  margin-right: 8px;
 }
 </style>
